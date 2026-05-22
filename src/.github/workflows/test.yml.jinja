@@ -167,6 +167,16 @@ jobs:
           name: Screenshots of failed JS tests - {{"${{ matrix.name }}${{ join(matrix.include) }}"}}
           path: /tmp/odoo_tests/{{"${{ env.PGDATABASE }}"}}
           if-no-files-found: ignore
+      - name: Upload Odoo server logs on failure
+        uses: actions/upload-artifact@v4
+        if: {{"${{ failure() }}"}}
+        with:
+          name: Odoo server logs - {{"${{ matrix.name }}${{ join(matrix.include) }}"}}
+          path: |
+            /var/log/odoo/*.log
+            {{"${{ github.workspace }}"}}/odoo.log
+            {{"${{ runner.temp }}"}}/odoo*.log
+          if-no-files-found: ignore
       {%- if github_enable_codecov %}
       - uses: codecov/codecov-action@v4
         with:
